@@ -1,19 +1,24 @@
 package edu.sjsu.fwjs;
 
 import java.util.Map;
+
+import javax.management.RuntimeErrorException;
+
+import jdk.internal.org.objectweb.asm.tree.analysis.Value;
+
 import java.util.HashMap;
 
 public class Environment {
-    private Map<String,Value> env = new HashMap<String,Value>();
+    private Map<String,Value> env = new HashMap<String,Value>(); 
     private Environment outerEnv;
 
     /**
-     * Constructor for global environment
+     * Constructor for global environment ***
      */
     public Environment() {}
 
     /**
-     * Constructor for local environment of a function
+     * Constructor for local environment of a function ***
      */
     public Environment(Environment outerEnv) {
         this.outerEnv = outerEnv;
@@ -28,6 +33,17 @@ public class Environment {
      */
     public Value resolveVar(String varName) {
         // YOUR CODE HERE
+    	//
+    	//Handles and checks if variable name exists in local scope, if so return it.
+    	//else if, check the outer scope and return that
+    	//Otherwise if none, return the value as none.
+        if (env.containsKey(varName)){
+            return env.containsKey(varName)
+        }
+        else if (outerEnv != null
+        		&& outerEnv.resolveVar(varName) != null) {
+        	return outerEnv.resolveVar(varName);
+        }
         return null;
     }
 
@@ -38,6 +54,21 @@ public class Environment {
      */
     public void updateVar(String key, Value v) {
         // YOUR CODE HERE
+    	//
+    	//If the local env contains variable then replace the key with the new value
+    	//else, check if the global env contains the key 
+    	//otherwise just create the key in the global scope 
+    	if(env.containsKey(key)) {
+    		env.replace(key, value);
+    	}
+    	else if (outerEnv != null & 
+    			outerEnv.resolveVar(key) != null)
+    	{
+    		outerEnv.updateVar(key, v);
+    	}
+    	else {
+    		outerEnv.createVar(key, v);
+    	}
     }
 
     /**
@@ -47,5 +78,14 @@ public class Environment {
      */
     public void createVar(String key, Value v) {
         // YOUR CODE HERE
+    	//
+    	//If the key already exists throw an error 
+    	//otherwise, create the new variable within the local(env) scope
+    	if(env.containsKey(key)) {
+    		throw new RuntimeErrorException(key, " already exists in this scope.");
+    	}
+    	else {
+    		env.put(key, value);
+    	}
     }
 }
