@@ -2,6 +2,12 @@ package edu.sjsu.fwjs;
 
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
+import org.omg.CORBA.Environment;
+
+import com.sun.javafx.fxml.expression.Expression;
+
 /**
  * Values in FWJS.
  * Evaluating a FWJS expression should return a FWJS value.
@@ -64,7 +70,7 @@ class NullVal implements Value {
  */
 class ClosureVal implements Value {
     private List<String> params;
-    private Expression body;
+    private Expression<T> body;
     private Environment outerEnv;
     /**
      * The environment is the environment where the function was created.
@@ -92,6 +98,17 @@ class ClosureVal implements Value {
      */
     public Value apply(List<Value> argVals) {
         // YOUR CODE HERE
-        return null;
+    	Environment env = new Environment (outerEnv);
+    	if(params.size() != argVals.size()) {
+    		throw new RuntimeErrorException();
+    	}
+    	int size = argVals.size()
+    	try {
+    		for (int i = 0; i < size; i++) {
+    			env.createVar(params.get(i), argVals.get(i));
+    		}
+    	}
+    	
+        return body.evaluate(env);
     }
 }
