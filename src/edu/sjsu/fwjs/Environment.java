@@ -38,7 +38,7 @@ public class Environment {
     	//else if, check the outer scope and return that
     	//Otherwise if none, return the value as none.
         if (env.containsKey(varName)){
-            return env.containsKey(varName)
+            return env.get(varName);
         }
         else if (outerEnv != null
         		&& outerEnv.resolveVar(varName) != null) {
@@ -59,7 +59,7 @@ public class Environment {
     	//else, check if the global env contains the key 
     	//otherwise just create the key in the global scope 
     	if(env.containsKey(key)) {
-    		env.replace(key, value);
+    		env.replace(key, v);
     	}
     	else if (outerEnv != null & 
     			outerEnv.resolveVar(key) != null)
@@ -82,10 +82,10 @@ public class Environment {
     	//If the key already exists throw an error 
     	//otherwise, create the new variable within the local(env) scope
     	if(env.containsKey(key)) {
-    		throw new RuntimeErrorException(key, " already exists in this scope.");
+    		throw new RuntimeErrorException(null);
     	}
     	else {
-    		env.put(key, value);
+    		env.put(key, v);
     	}
     }
 }

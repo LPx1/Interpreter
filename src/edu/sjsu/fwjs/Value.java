@@ -98,9 +98,9 @@ class ClosureVal implements Value {
      */
     public Value apply(List<Value> argVals) {
         // YOUR CODE HERE
-    	Environment env = new Environment (outerEnv);
+    	Environment env = new Environment(outerEnv);
     	if(params.size() != argVals.size()) {
-    		throw new RuntimeErrorException();
+    		throw new RuntimeErrorException(null);
     	}
     	int size = argVals.size()
     	try {
