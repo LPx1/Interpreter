@@ -72,8 +72,43 @@ class BinOpExpr implements Expression {
 
     @SuppressWarnings("incomplete-switch")
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+    	IntVal num1 = (IntVal)e1.evaluate(env);
+    	IntVal num2 = (IntVal)e2.evaluate(new Environment());
+    	Value returnVal = new NullVal();
+    	switch(op) {
+    		case ADD: 
+    			returnVal = new IntVal(num1.toInt() + num2.toInt());
+    			break;
+    		case SUBTRACT:
+    			returnVal = new IntVal(num1.toInt() - num2.toInt());
+    			break;
+    		case MULTIPLY:
+    			returnVal = new IntVal(num1.toInt() * num2.toInt());
+    			break;
+    		case DIVIDE:
+    			returnVal = new IntVal(num1.toInt()/num2.toInt());
+    			break;
+    		case MOD:
+    			returnVal = new IntVal(num1.toInt() % num2.toInt());
+    			break;
+    		case GT:
+    			returnVal = new BoolVal(num1.toInt() > num2.toInt());
+    			break;
+    		case GE:
+    			returnVal = new BoolVal(num1.toInt() >= num2.toInt());
+    			break;
+    		case LT: 
+    			returnVal = new BoolVal(num1.toInt() < num2.toInt());
+    			break;
+    		case LE:
+    			returnVal = new BoolVal(num1.toInt() <= num2.toInt());
+    			break;
+    		case EQ:
+    			returnVal = new BoolVal(num1.toInt() == num2.toInt());
+    			break;
+    		
+    	}
+    	return returnVal;
     }
 }
 
@@ -91,8 +126,13 @@ class IfExpr implements Expression {
         this.els = els;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+        Value v = cond.evaluate(env);
+        Value returnVal = null;
+        if(v instanceof BoolVal && ((BoolVal)v).toBoolean()) 
+        	returnVal = thn.evaluate(new Environment());
+        else
+        	returnVal = els.evaluate(new Environment());
+        return returnVal;
     }
 }
 
@@ -107,8 +147,16 @@ class WhileExpr implements Expression {
         this.body = body;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+    	while(true) {
+			Value v = cond.evaluate(env);
+			if(!(v instanceof BoolVal))
+				throw new RuntimeException("Condition does not evaluate to boolean val.");
+			else if (((BoolVal)v).toBoolean()){
+				body.evaluate(env);
+			} else {
+				return new NullVal();
+			}
+		}
     }
 }
 
@@ -123,8 +171,9 @@ class SeqExpr implements Expression {
         this.e2 = e2;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+        e1.evaluate(env);
+    	return e2.evaluate(new Environment());
+        
     }
 }
 
@@ -139,8 +188,14 @@ class VarDeclExpr implements Expression {
         this.exp = exp;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+        Value v = new NullVal();
+        if(exp == null) 
+        	env.createVar(varName, v);
+        else {
+        	v = exp.evaluate(env);     
+        	env.createVar(varName, v);
+        }
+        return v;
     }
 }
 
@@ -157,8 +212,13 @@ class AssignExpr implements Expression {
         this.e = e;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+    	Value v = new NullVal();
+        if(e == null) {
+        	return v;
+        }
+        v = e.evaluate(env);
+        env.updateVar(varName, v);
+        return v;
     }
 }
 
@@ -173,8 +233,7 @@ class FunctionDeclExpr implements Expression {
         this.body = body;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+    	return new ClosureVal(params, body, env);
     }
 }
 
@@ -189,8 +248,14 @@ class FunctionAppExpr implements Expression {
         this.args = args;
     }
     public Value evaluate(Environment env) {
-        // YOUR CODE HERE
-        return null;
+        Value v = f.evaluate(env);
+        List<Value> vArgs = new ArrayList<Value>();
+        for(int i = 0; i < args.size(); i++) {
+        	vArgs.add(i, args.get(i).evaluate(env));
+        }
+        ClosureVal cVal = (ClosureVal)v;
+        
+        return cVal.apply(vArgs);
     }
 }
 
