@@ -1,3 +1,10 @@
+/* CS
+ * @Luis Pamintuan
+ * @Ivan Hernandez 
+ * 
+ * 	16 October 2018
+ */
+
 package edu.sjsu.fwjs;
 
 import java.util.ArrayList;

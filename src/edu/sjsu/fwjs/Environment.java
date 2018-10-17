@@ -1,3 +1,10 @@
+/* CS
+ * @Luis Pamintuan
+ * @Ivan Hernandez 
+ * 
+ * 	16 October 2018
+ */
+
 package edu.sjsu.fwjs;
 
 import java.util.Map;
@@ -73,6 +80,9 @@ public class Environment {
      * a RuntimeException is thrown.
      */
     public void createVar(String key, Value v) throws RuntimeException {
+    	//Creates new variable in the local scope 
+    	//If the variable is already defined or already exists in local scope,
+    	//then it throws a RuntimeException
     	if(env.containsKey(key)) {
     		throw new RuntimeException("The variable " + key + " is already defined");
     	}
