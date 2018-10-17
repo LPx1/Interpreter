@@ -72,6 +72,11 @@ class BinOpExpr implements Expression {
 
     @SuppressWarnings("incomplete-switch")
     public Value evaluate(Environment env) {
+    	Value v1 = e1.evaluate(env);
+    	Value v2 = e2.evaluate(env);
+    	if(v1 instanceof NullVal) {
+    		
+    	}
     	IntVal num1 = (IntVal)e1.evaluate(env);
     	IntVal num2 = (IntVal)e2.evaluate(new Environment());
     	Value returnVal = new NullVal();
@@ -128,7 +133,9 @@ class IfExpr implements Expression {
     public Value evaluate(Environment env) {
         Value v = cond.evaluate(env);
         Value returnVal = null;
-        if(v instanceof BoolVal && ((BoolVal)v).toBoolean()) 
+        if(v instanceof IntVal && ((IntVal)v).toInt() != 0)
+			returnVal = thn.evaluate(new Environment());
+        else if(v instanceof BoolVal && ((BoolVal)v).toBoolean()) 
         	returnVal = thn.evaluate(new Environment());
         else
         	returnVal = els.evaluate(new Environment());
@@ -171,8 +178,12 @@ class SeqExpr implements Expression {
         this.e2 = e2;
     }
     public Value evaluate(Environment env) {
+    	if(e1 == null)
+    		return new NullVal();
         e1.evaluate(env);
-    	return e2.evaluate(new Environment());
+        if(e2 == null)
+        	return new NullVal();
+    	return e2.evaluate(env);
         
     }
 }
