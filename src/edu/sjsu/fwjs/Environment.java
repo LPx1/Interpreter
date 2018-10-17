@@ -2,9 +2,7 @@ package edu.sjsu.fwjs;
 
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
 
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 
 import java.util.HashMap;
 
@@ -40,11 +38,10 @@ public class Environment {
         if (env.containsKey(varName)){
             return env.get(varName);
         }
-        else if (outerEnv != null
-        		&& outerEnv.resolveVar(varName) != null) {
+        else if (outerEnv != null) {
         	return outerEnv.resolveVar(varName);
         }
-        return null;
+        return new NullVal();
     }
 
     /**
@@ -59,15 +56,14 @@ public class Environment {
     	//else, check if the global env contains the key 
     	//otherwise just create the key in the global scope 
     	if(env.containsKey(key)) {
-    		env.replace(key, v);
+    		env.put(key, v);
     	}
-    	else if (outerEnv != null & 
-    			outerEnv.resolveVar(key) != null)
+    	else if (outerEnv != null)
     	{
     		outerEnv.updateVar(key, v);
     	}
     	else {
-    		outerEnv.createVar(key, v);
+    		env.put(key, v);
     	}
     }
 
@@ -76,18 +72,12 @@ public class Environment {
      * If the variable has been defined in the current scope previously,
      * a RuntimeException is thrown.
      */
-    public void createVar(String key, Value v) {
-        // YOUR CODE HERE
-    	//
-    	//If the key already exists throw an error 
-    	//otherwise, create the new variable within the local(env) scope
+    public void createVar(String key, Value v) throws RuntimeException {
     	if(env.containsKey(key)) {
-    		throw new RuntimeErrorException(null);
+    		throw new RuntimeException("The variable " + key + " is already defined");
     	}
     	else {
     		env.put(key, v);
     	}
     }
 }
-
-//Testing
