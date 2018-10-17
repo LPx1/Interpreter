@@ -70,7 +70,7 @@ class NullVal implements Value {
  */
 class ClosureVal implements Value {
     private List<String> params;
-    private Expression<T> body;
+    private Expression body;
     private Environment outerEnv;
     /**
      * The environment is the environment where the function was created.
@@ -98,16 +98,18 @@ class ClosureVal implements Value {
      */
     public Value apply(List<Value> argVals) {
         // YOUR CODE HERE
+//    	Environment env1 = new Environment(outerEnv);
     	Environment env = new Environment(outerEnv);
+    	
     	if(params.size() != argVals.size()) {
     		throw new RuntimeErrorException(null);
     	}
-    	int size = argVals.size()
+    	int size = argVals.size();
     	try {
     		for (int i = 0; i < size; i++) {
     			env.createVar(params.get(i), argVals.get(i));
     		}
-    	}
+    	} catch (Exception e) { throw new RuntimeException();}
     	
         return body.evaluate(env);
     }
