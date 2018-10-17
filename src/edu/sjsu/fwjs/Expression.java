@@ -79,11 +79,7 @@ class BinOpExpr implements Expression {
 
     @SuppressWarnings("incomplete-switch")
     public Value evaluate(Environment env) {
-    	Value v1 = e1.evaluate(env);
-    	Value v2 = e2.evaluate(env);
-    	if(v1 instanceof NullVal) {
-    		
-    	}
+    	
     	IntVal num1 = (IntVal)e1.evaluate(env);
     	IntVal num2 = (IntVal)e2.evaluate(env);
     	Value returnVal = new NullVal();
