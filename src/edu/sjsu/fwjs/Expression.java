@@ -78,7 +78,7 @@ class BinOpExpr implements Expression {
     		
     	}
     	IntVal num1 = (IntVal)e1.evaluate(env);
-    	IntVal num2 = (IntVal)e2.evaluate(new Environment());
+    	IntVal num2 = (IntVal)e2.evaluate(env);
     	Value returnVal = new NullVal();
     	switch(op) {
     		case ADD: 
